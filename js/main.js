@@ -55,6 +55,29 @@ window.addEventListener("resize", resize);
 
 resize();
 
+function requestSensors() {
+    if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function') {
+        renderer.domElement.onclick = function () {
+            window.DeviceMotionEvent.requestPermission()
+                .then(response => {
+                    if (response === 'granted') {
+                        window.addEventListener('devicemotion', startSensors, console.error);
+                    }
+                })
+                .catch(console.error);
+        }
+    }
+    else {
+        startSensors();
+    }
+}
+
+function startSensors() {
+    renderer.domElement.removeAttribute("onclick");
+    orientation.start();
+    geolocation.start();
+}
+
 let device    = new THREE.Quaternion().identity().toArray();
 let latitude  = 0;
 let longitude = 0;
@@ -76,12 +99,11 @@ function animate() {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
-
-function start() {
-    orientation.start();
-    geolocation.start();
+  
+function main() {
+    requestSensors();
     document.body.appendChild(renderer.domElement);
     requestAnimationFrame(animate);
 }
 
-window.addEventListener("load", start);
+window.addEventListener("load", main);
