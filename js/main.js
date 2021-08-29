@@ -1,8 +1,8 @@
 import { AbsoluteOrientationSensor } from './motion-sensors.js';
 import { GeolocationSensor } from './geolocation-sensor.js';
 
-let orientation = new AbsoluteOrientationSensor({ frequency: 60 });
-let geolocation = new GeolocationSensor({ frequency: 60 });
+const orientation = new AbsoluteOrientationSensor({ frequency: 60 });
+const geolocation = new GeolocationSensor({ frequency: 60 });
 
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -91,10 +91,10 @@ function animate() {
     const azimuth  = new THREE.Quaternion();
     const altitude = new THREE.Quaternion();
 
-    azimuth.setFromAxisAngle(new THREE.Vector3(1, 0, 0), moon.azimuth);
-    altitude.setFromAxisAngle(new THREE.Vector3(0, 1, 0), moon.altitude);
+    azimuth .setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2 + moon.altitude);
+    altitude.setFromAxisAngle(new THREE.Vector3(0, 0, 1), moon.azimuth);
     
-    arrow.quaternion.fromArray(north.multiply(azimuth).multiply(altitude).toArray());
+    arrow.quaternion.fromArray(north.multiply(azimuth).multiply(altitude).toArray()).inverse();
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
