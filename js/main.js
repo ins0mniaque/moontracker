@@ -94,7 +94,7 @@ function animate() {
     azimuth .setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2 + moon.altitude);
     altitude.setFromAxisAngle(new THREE.Vector3(0, 0, 1), moon.azimuth);
     
-    arrow.quaternion.fromArray(north.multiply(azimuth).multiply(altitude).toArray()).inverse();
+    arrow.quaternion.fromArray(north.multiply(azimuth).multiply(altitude).toArray()).invert();
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
