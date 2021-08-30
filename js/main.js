@@ -12,11 +12,11 @@ const renderer = new THREE.WebGLRenderer({
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(28, 1, 1, 1000);
-camera.position.set(10, 10, 50);
+camera.position.z = 50;
 camera.lookAt(scene.position);
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(0, 0, -1);
+light.position.z = -1;
 camera.add(light);
 
 const arrow    = new THREE.Group();
@@ -78,23 +78,22 @@ function startSensors() {
     geolocation.start();
 }
 
-let device    = new THREE.Quaternion().identity().toArray();
+let north     = new THREE.Quaternion().identity().toArray();
 let latitude  = 0;
 let longitude = 0;
 
-orientation.onreading = () => device = orientation.quaternion;
+orientation.onreading = () => north = orientation.quaternion;
 geolocation.onreading = () => { latitude = geolocation.latitude; longitude = geolocation.longitude; }
 
 function animate() {
     const moon     = SunCalc.getMoonPosition(new Date(), latitude, longitude);
-    const north    = new THREE.Quaternion().fromArray(device);
     const azimuth  = new THREE.Quaternion();
     const altitude = new THREE.Quaternion();
 
-    azimuth .setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2 + moon.altitude);
-    altitude.setFromAxisAngle(new THREE.Vector3(0, 0, 1), moon.azimuth);
+    azimuth .setFromAxisAngle(new THREE.Vector3(1, 0, 0), moon.altitude - Math.PI / 2);
+    altitude.setFromAxisAngle(new THREE.Vector3(0, 1, 0), moon.azimuth);
     
-    arrow.quaternion.fromArray(north.multiply(azimuth).multiply(altitude).toArray()).invert();
+    arrow.quaternion.fromArray(north).invert().multiply(azimuth).multiply(altitude);
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
