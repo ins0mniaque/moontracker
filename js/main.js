@@ -78,22 +78,22 @@ function startSensors() {
     geolocation.start();
 }
 
-let north     = new THREE.Quaternion().identity().toArray();
+let zenith    = new THREE.Quaternion().identity().toArray();
 let latitude  = 0;
 let longitude = 0;
 
-orientation.onreading = () => north = orientation.quaternion;
+orientation.onreading = () => zenith = orientation.quaternion;
 geolocation.onreading = () => { latitude = geolocation.latitude; longitude = geolocation.longitude; }
 
 function animate() {
     const moon     = SunCalc.getMoonPosition(new Date(), latitude, longitude);
-    const azimuth  = new THREE.Quaternion();
     const altitude = new THREE.Quaternion();
+    const azimuth  = new THREE.Quaternion();
 
-    azimuth .setFromAxisAngle(new THREE.Vector3(1, 0, 0), moon.altitude - Math.PI / 2);
-    altitude.setFromAxisAngle(new THREE.Vector3(0, 1, 0), moon.azimuth);
-    
-    arrow.quaternion.fromArray(north).invert().multiply(azimuth).multiply(altitude);
+    altitude.setFromAxisAngle(new THREE.Vector3(1, 0, 0), moon.altitude - Math.PI / 2);
+    azimuth .setFromAxisAngle(new THREE.Vector3(0, 1, 0), moon.azimuth  - Math.PI);
+
+    arrow.quaternion.fromArray(zenith).invert().multiply(altitude).multiply(azimuth);
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
