@@ -1,7 +1,7 @@
 import { AbsoluteOrientationSensor } from './motion-sensors.js';
 import { GeolocationSensor } from './geolocation-sensor.js';
 
-const orientation = new AbsoluteOrientationSensor({ frequency: 60 });
+const orientation = new AbsoluteOrientationSensor({ frequency: 60, referenceFrame: 'screen' });
 const geolocation = new GeolocationSensor({ frequency: 60 });
 
 const renderer = new THREE.WebGLRenderer({
@@ -21,7 +21,7 @@ camera.add(light);
 
 const arrow    = new THREE.Group();
 const arrowMat = new THREE.MeshPhongMaterial({
-    color: "gold"
+    color: 'gold'
 });
 
 const coneGeo  = new THREE.ConeBufferGeometry(2, 5, 32);
@@ -51,7 +51,7 @@ function resize() {
     renderer.render(scene, camera);
 }
 
-window.addEventListener("resize", resize);
+window.addEventListener('resize', resize);
 
 resize();
 
@@ -73,7 +73,7 @@ function requestSensors() {
 }
 
 function startSensors() {
-    renderer.domElement.removeAttribute("onclick");
+    renderer.domElement.removeAttribute('onclick');
     orientation.start();
     geolocation.start();
 }
@@ -105,4 +105,4 @@ function main() {
     requestAnimationFrame(animate);
 }
 
-window.addEventListener("load", main);
+window.addEventListener('load', main);
